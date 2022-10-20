@@ -11,6 +11,9 @@ function Filters() {
     value: 0,
   });
   const [showFilters, setShowFilters] = useState(false);
+  const [filterOptions, setFilterOptions] = useState([
+    'population', 'orbital_period', 'diameter', 'rotation_period', 'surface_water',
+  ]);
 
   const handleChange = ({ target: { name, value } }) => {
     setLocalFilters({
@@ -22,6 +25,13 @@ function Filters() {
   const handleSubmit = () => {
     setFilters([...filters, localFilters]);
     setShowFilters(true);
+    const removeColumn = localFilters.columns;
+    const newOptions = filterOptions.filter((option) => option !== removeColumn);
+    setLocalFilters({
+      ...localFilters,
+      columns: newOptions[0],
+    });
+    setFilterOptions(newOptions);
   };
 
   return (
@@ -36,11 +46,8 @@ function Filters() {
             name="columns"
             value={ localFilters.columns }
           >
-            <option value="population">population</option>
-            <option value="orbital_period">orbital_period</option>
-            <option value="diameter">diameter</option>
-            <option value="rotation_period">rotation_period</option>
-            <option value="surface_water">surface_water</option>
+            {filterOptions
+              .map((option) => <option value={ option } key={ option }>{option}</option>)}
           </select>
         </label>
         <label htmlFor="comparison-filter">
