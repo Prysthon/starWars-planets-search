@@ -1,14 +1,16 @@
 import React, { useState, useContext } from 'react';
 import MyContext from '../context/myContext';
+import ShowFilters from './ShowFilters';
 
 function Filters() {
-  const { setFilters } = useContext(MyContext);
+  const { filters, setFilters } = useContext(MyContext);
 
   const [localFilters, setLocalFilters] = useState({
     columns: 'population',
     comparison: 'maior que',
     value: 0,
   });
+  const [showFilters, setShowFilters] = useState(false);
 
   const handleChange = ({ target: { name, value } }) => {
     setLocalFilters({
@@ -18,7 +20,8 @@ function Filters() {
   };
 
   const handleSubmit = () => {
-    setFilters(localFilters);
+    setFilters([...filters, localFilters]);
+    setShowFilters(true);
   };
 
   return (
@@ -73,6 +76,7 @@ function Filters() {
           Submit
         </button>
       </form>
+      {showFilters && <ShowFilters filters={ filters } />}
     </div>
   );
 }

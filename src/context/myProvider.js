@@ -5,7 +5,7 @@ import MyContext from './myContext';
 function Provider({ children }) {
   const [planets, setPlanets] = useState([]);
   const [searchPlanets, setSearchPlanets] = useState('');
-  const [filters, setFilters] = useState({});
+  const [filters, setFilters] = useState([]);
   const endpoint = 'https://swapi.dev/api/planets';
 
   useEffect(() => {
@@ -38,16 +38,17 @@ function Provider({ children }) {
   }, [searchPlanets]);
 
   useEffect(() => {
-    const { columns, comparison, value } = filters;
     let filterPlanets = [];
-    if (comparison === 'maior que') {
-      filterPlanets = planets.filter((e) => e[columns] > Number(value));
-    } else if (comparison === 'menor que') {
-      filterPlanets = planets.filter((e) => e[columns] < Number(value));
-    } else if (comparison === 'igual') {
-      filterPlanets = planets.filter((e) => Number(e[columns]) === Number(value));
-    }
-    setPlanets(filterPlanets);
+    filters.forEach(({ columns, comparison, value }) => {
+      if (comparison === 'maior que') {
+        filterPlanets = planets.filter((e) => e[columns] > Number(value));
+      } else if (comparison === 'menor que') {
+        filterPlanets = planets.filter((e) => e[columns] < Number(value));
+      } else if (comparison === 'igual') {
+        filterPlanets = planets.filter((e) => Number(e[columns]) === Number(value));
+      }
+      setPlanets(filterPlanets);
+    });
   }, [filters]);
 
   const providerValue = useMemo(() => ({
