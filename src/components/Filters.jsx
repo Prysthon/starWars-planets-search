@@ -3,7 +3,7 @@ import MyContext from '../context/myContext';
 import ShowFilters from './ShowFilters';
 
 function Filters() {
-  const { filters, setFilters } = useContext(MyContext);
+  const { filters, setFilters, setOrderFilters } = useContext(MyContext);
 
   const [localFilters, setLocalFilters] = useState({
     columns: 'population',
@@ -14,10 +14,18 @@ function Filters() {
   const [filterOptions, setFilterOptions] = useState([
     'population', 'orbital_period', 'diameter', 'rotation_period', 'surface_water',
   ]);
+  const [sortLocal, setSortLocal] = useState({ column: 'population', sort: 'ASC' });
 
   const handleChange = ({ target: { name, value } }) => {
     setLocalFilters({
       ...localFilters,
+      [name]: value,
+    });
+  };
+
+  const handleChangeOrder = ({ target: { name, value } }) => {
+    setSortLocal({
+      ...sortLocal,
       [name]: value,
     });
   };
@@ -82,8 +90,57 @@ function Filters() {
         >
           Submit
         </button>
+        <label htmlFor="column-sort">
+          Order by column:
+          <select
+            onChange={ handleChangeOrder }
+            data-testid="column-sort"
+            id="column-sort"
+            name="column"
+            value={ sortLocal.column }
+          >
+            {filterOptions
+              .map((option) => <option value={ option } key={ option }>{option}</option>)}
+          </select>
+        </label>
+        <label htmlFor="column-sort-input-asc">
+          Asc
+          <input
+            type="radio"
+            onChange={ handleChangeOrder }
+            data-testid="column-sort-input-asc"
+            id="column-sort-input-asc"
+            name="sort"
+            value="ASC"
+          />
+        </label>
+        <label htmlFor="column-sort-input-desc">
+          Desc
+          <input
+            type="radio"
+            onChange={ handleChangeOrder }
+            data-testid="column-sort-input-desc"
+            id="column-sort-input-desc"
+            name="sort"
+            value="DESC"
+          />
+        </label>
+        <button
+          type="button"
+          data-testid="column-sort-button"
+          onClick={ () => setOrderFilters(sortLocal) }
+        >
+          Sort
+        </button>
+        <button
+          type="button"
+          data-testid="button-remove-filters"
+          onClick={ () => setFilters([]) }
+        >
+          Clear all
+        </button>
       </form>
-      {showFilters && <ShowFilters filters={ filters } />}
+      {showFilters && <ShowFilters />}
     </div>
   );
 }
